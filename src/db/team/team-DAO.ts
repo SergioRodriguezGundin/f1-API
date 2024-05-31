@@ -1,6 +1,5 @@
 import { TeamDAOInterface, TeamDB } from './team-DAO.interface';
 import { DBXataClient } from '../xata-client';
-import { Env } from '../../env.interface';
 
 export class TeamDAO implements TeamDAOInterface {
   private static instance: TeamDAO;

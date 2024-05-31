@@ -1,4 +1,3 @@
-import { Env } from '../../env.interface';
 import { DBXataClient } from '../xata-client';
 import { DriverDAOInterface, DriverDB } from './driver-DAO.interface';
 
