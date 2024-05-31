@@ -1,18 +1,12 @@
-/**
- * Welcome to Cloudflare Workers! This is your first worker.
- *
- * - Run `npm run dev` in your terminal to start a development server
- * - Open a browser tab at http://localhost:8787/ to see your worker in action
- * - Run `npm run deploy` to publish your worker
- *
- * Bind resources to your worker in `wrangler.toml`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
- *
- * Learn more at https://developers.cloudflare.com/workers/
- */
+import { Hono } from "hono";
+import { TeamController } from './endpoints/team/team-controller';
+import { DriverController } from './endpoints/driver/driver-controller';
 
-export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		return new Response('Hello World!');
-	},
-};
+export const app = new Hono();
+app.get("/", (c) => c.text("F1 API running!"));
+
+// Team
+app.get('/teams', TeamController.getTeams);
+app.get('/drivers', DriverController.getDrivers);
+
+export default app

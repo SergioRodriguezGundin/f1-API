@@ -170,3 +170,8 @@ dist
 
 .dev.vars
 .wrangler/
+
+# xata project
+.ledger/
+.xata/
+.xatarc
