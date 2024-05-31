@@ -2,11 +2,11 @@
 
 Welcome to the Formula One API project! This is a fun and educational project created to explore the capabilities of Cloudflare Workers and KV for caching. As a big Formula One fan, this project collect information from personal Xata Database.
 
-## Table of Contents
+## Technologies
 
-- [Introduction](#introduction)
-- [Features](#features)
-- [License](#license)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?logo=cloudflare&logoColor=white)
+![Xata](https://img.shields.io/badge/Xata-FF4081?logo=xata&logoColor=white)
+![Hono](https://img.shields.io/badge/Hono-FF385C?logo=hono&logoColor=white)
 
 ## Introduction
 
