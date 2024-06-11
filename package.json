@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "@xata.io/client": "^0.29.4",
+    "hono": "^4.4.4",
     "xata": "^0.2.0"
   }
 }
