@@ -29,6 +29,8 @@ const tables = [
       { name: "points", type: "int", notNull: true, defaultValue: "0" },
       { name: "image", type: "string", notNull: true, defaultValue: " " },
       { name: "name", type: "string", notNull: true, defaultValue: " " },
+      { name: "icon", type: "string" },
+      { name: "car", type: "string", notNull: true, defaultValue: " " },
     ],
     revLinks: [
       { column: "team", table: "Driver" },

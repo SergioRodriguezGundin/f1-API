@@ -1,4 +1,3 @@
-import { Env } from '../env.interface';
 import { XataClient } from '../xata';
 import { DBClient } from './db-client.interface';
 
