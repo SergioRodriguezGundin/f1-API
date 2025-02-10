@@ -106,3 +106,7 @@ id = "771af6167b314408aca98161367bbda3"
 # [[vectorize]]
 # binding = "MY_INDEX"
 # index_name = "my-index"
+
+# wrangler.toml (wrangler v3.88.0^)
+[observability.logs]
+enabled = true
