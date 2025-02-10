@@ -36,17 +36,4 @@ export class DriverDAO implements DriverDAOInterface {
 
     return drivers as DriverDB[];
   }
-
-  createDriver(driver: DriverDB): Promise<DriverDB> {
-    throw new Error('Method not implemented.');
-  }
-
-  updateDriver(id: string): Promise<DriverDB> {
-    throw new Error('Method not implemented.');
-  }
-
-  deleteDriver(id: string): Promise<DriverDB> {
-    throw new Error('Method not implemented.');
-  }
-
 }

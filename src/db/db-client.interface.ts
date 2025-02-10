@@ -1,2 +1,3 @@
-export interface DBClient {
+export interface DBClient<T> {
+	getClient(): T;
 }
