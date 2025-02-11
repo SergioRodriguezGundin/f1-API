@@ -19,6 +19,15 @@ export class DriverDAO implements DriverDAOInterface {
 	}
 
 	async getDriverByName(year: string, name: string): Promise<DriverDB> {
+		const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
+
+		if (cachedDrivers) {
+			const driver = cachedDrivers.find((driver) => driver.queryName === name);
+			if (driver) {
+				return driver;
+			}
+		}
+
 		const driver = await this.databaseClient
 			.getClient()
 			.db.Driver.filter({ year: parseInt(year), queryName: name })
@@ -27,10 +36,10 @@ export class DriverDAO implements DriverDAOInterface {
 	}
 
 	async getDrivers(year: string): Promise<DriverDB[]> {
-		const cachedDrivers = await this.env.F1_CACHE.get('drivers', 'json');
+		const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
 
 		if (cachedDrivers) {
-			return cachedDrivers as DriverDB[];
+			return cachedDrivers;
 		}
 
 		const drivers = await this.databaseClient
