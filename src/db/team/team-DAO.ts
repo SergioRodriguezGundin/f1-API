@@ -18,14 +18,17 @@ export class TeamDAO implements TeamDAOInterface {
 		return TeamDAO.instance;
 	}
 
-	async getTeams(): Promise<TeamDB[]> {
-		const cahedTeams = await this.env.F1_CACHE.get('teams', 'json');
+	async getTeams(year: string): Promise<TeamDB[]> {
+		const cahedTeams = await this.env.F1_CACHE.get(`teams`, 'json');
 
 		if (cahedTeams) {
 			return cahedTeams as TeamDB[];
 		}
 
-		const teams = await this.databaseClient.getClient().db.Team.getAll();
+		const teams = await this.databaseClient
+			.getClient()
+			.db.Team.filter({ year: parseInt(year) })
+			.getAll();
 
 		// save teams in CACHE
 		await this.env.F1_CACHE.put('teams', JSON.stringify(teams));
@@ -33,23 +36,20 @@ export class TeamDAO implements TeamDAOInterface {
 		return teams as TeamDB[];
 	}
 
-	async getTeamByName(name: string): Promise<TeamDB> {
-		const cachedTeams: string | null = await this.env.F1_CACHE.get(`teams`, 'json');
+	async getTeamByName(year: string, name: string): Promise<TeamDB> {
+		const cachedTeams = await this.env.F1_CACHE.get<TeamDB[]>(`teams`, 'json');
 
 		if (cachedTeams) {
-			const parsedTeams = JSON.parse(cachedTeams) as TeamDB[];
-			const team = parsedTeams.find((team) => team.name === name);
+			const team = cachedTeams.find((team) => team.name === name);
 			if (team) {
 				return team;
 			}
 		}
 
-		const team = await this.databaseClient.getClient().db.Team.getFirst({
-			filter: {
-				name: name,
-			},
-		});
-
+		const team = await this.databaseClient
+			.getClient()
+			.db.Team.filter({ year: parseInt(year), queryName: name })
+			.getFirstOrThrow();
 		return team as TeamDB;
 	}
 }

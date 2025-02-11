@@ -9,12 +9,18 @@ export const app = new Hono();
 app.get('/', (c) => c.text('F1 API running!'));
 
 // Team
-app.get('/teams', TeamController.getTeams);
-app.get('/teams/:name', TeamController.getTeamByName);
+app.get('/:year/teams', TeamController.getTeams);
+app.get('/:year/teams/:name', TeamController.getTeamByName);
 
-app.get('/drivers', DriverController.getDrivers);
-app.get('/races-results', RacesResultsController.getRacesResults);
-app.get('/races-results/:id', RaceResultDetailsController.getRaceResultDetails);
-app.get('/schedule', ScheduleController.getSchedule);
+// Driver
+app.get('/:year/drivers', DriverController.getDrivers);
+app.get('/:year/drivers/:name', DriverController.getDriverByName);
+
+// Races Results
+app.get('/:year/races-results', RacesResultsController.getRacesResults);
+app.get('/:year/races-results/:id', RaceResultDetailsController.getRaceResultDetails);
+
+// Schedule
+app.get('/:year/schedule', ScheduleController.getSchedule);
 
 export default app;
