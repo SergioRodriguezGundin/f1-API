@@ -1,8 +1,7 @@
-import { RacesResult } from "../../../xata";
+import { RacesResult } from '../../../xata';
 
-export interface RacesResultsDB extends RacesResult { }
+export interface RacesResultsDB extends RacesResult {}
 
 export interface RacesResulstDAOInterface {
-  getRacesResults(): Promise<RacesResultsDB[]>;
+	getRacesResults(year: string): Promise<RacesResultsDB[]>;
 }
-

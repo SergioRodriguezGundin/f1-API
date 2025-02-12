@@ -1,4 +1,4 @@
-import { XataClient } from '../xata';
+import { getXataClient, XataClient } from '../xata';
 import { DBClient } from './db-client.interface';
 
 export class DBXataClient implements DBClient<XataClient> {
@@ -6,11 +6,7 @@ export class DBXataClient implements DBClient<XataClient> {
 	private client: XataClient;
 
 	private constructor(env: Env) {
-		this.client = new XataClient({
-			apiKey: env.XATA_API_KEY,
-			branch: env.XATA_BRANCH,
-			databaseURL: env.XATA_DATABASE_URL,
-		});
+		this.client = getXataClient(env);
 	}
 
 	public static getInstance(env: Env): DBXataClient {
