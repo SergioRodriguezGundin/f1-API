@@ -175,3 +175,6 @@ dist
 .ledger/
 .xata/
 .xatarc
+
+# vscode settings
+.vscode/settings.json
