@@ -17,8 +17,8 @@ app.get('/:year/drivers', DriverController.getDrivers);
 app.get('/:year/drivers/:name', DriverController.getDriverByName);
 
 // Races Results
-app.get('/:year/races-results', RacesResultsController.getRacesResults);
-app.get('/:year/races-results/:id', RaceResultDetailsController.getRaceResultDetails);
+app.get('/:year/races/results', RacesResultsController.getRacesResults);
+app.get('/:year/races/results/:id', RaceResultDetailsController.getRaceResultDetails);
 
 // Schedule
 app.get('/:year/schedule', ScheduleController.getSchedule);
