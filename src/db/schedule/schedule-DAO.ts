@@ -25,31 +25,48 @@ export class ScheduleDAO implements ScheduleDAOInterface {
 		return ScheduleDAO.instance;
 	}
 
-	public async getSchedule(): Promise<ScheduleDB[]> {
-		const cachedSchedule = await this.env.F1_CACHE.get('schedule', 'json');
+	public async getSchedule(year: string): Promise<ScheduleDB[]> {
+		const cachedSchedule = await this.env.F1_CACHE.get(`schedule-${year}`, 'json');
 
 		if (cachedSchedule) {
 			return cachedSchedule as ScheduleDB[];
 		}
 
 		const schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+		const scheduleOrdered = this.orderRacesByDate(schedule);
 
-		await this.env.F1_CACHE.put('schedule', JSON.stringify(schedule));
+		await this.env.F1_CACHE.put(`schedule-${year}`, JSON.stringify(scheduleOrdered));
 
-		return schedule as ScheduleDB[];
+		return scheduleOrdered as ScheduleDB[];
 	}
 
-	public async getNextRaces(): Promise<ScheduleDB[]> {
-		const schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+	public async getNextRaces(year: string): Promise<ScheduleDB[]> {
 		const currentDate = new Date();
+		let schedule: ScheduleDB[] = [];
+		schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ScheduleDB[];
+
+		if (!schedule) {
+			schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+		}
+
 		const nextRaces = this.orderRacesByDate(schedule).filter((race) => (race.date as Date) >= currentDate);
+		await this.env.F1_CACHE.put(`next-races-${year}`, JSON.stringify(nextRaces));
+
 		return nextRaces.slice(1, nextRaces.length - 1);
 	}
 
-	public async getCurrentRace(): Promise<ScheduleDB> {
-		const schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+	public async getCurrentRace(year: string): Promise<ScheduleDB> {
 		const currentDate = new Date();
+		let schedule: ScheduleDB[] = [];
+		schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ScheduleDB[];
+
+		if (!schedule) {
+			schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+		}
+
 		const nextRace = this.orderRacesByDate(schedule).find((race) => (race.date as Date) >= currentDate);
+		await this.env.F1_CACHE.put(`current-race-${year}`, JSON.stringify(nextRace));
+
 		return nextRace as ScheduleDB;
 	}
 

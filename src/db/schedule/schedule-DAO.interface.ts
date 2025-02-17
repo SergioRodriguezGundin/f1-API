@@ -3,7 +3,7 @@ import { Schedule } from '../../xata';
 export interface ScheduleDB extends Schedule {}
 
 export interface ScheduleDAOInterface {
-	getSchedule(): Promise<ScheduleDB[]>;
-	getNextRaces(): Promise<ScheduleDB[]>;
-	getCurrentRace(): Promise<ScheduleDB>;
+	getSchedule(year: string): Promise<ScheduleDB[]>;
+	getNextRaces(year: string): Promise<ScheduleDB[]>;
+	getCurrentRace(year: string): Promise<ScheduleDB>;
 }
