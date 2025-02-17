@@ -108,6 +108,7 @@ const tables = [
 			},
 			{ name: 'year', type: 'int', notNull: true, defaultValue: '2024' },
 			{ name: 'isSprintRace', type: 'bool', defaultValue: 'false' },
+			{ name: 'date', type: 'datetime', unique: true },
 		],
 	},
 	{

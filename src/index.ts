@@ -22,5 +22,7 @@ app.get('/:year/races/results/:id', RaceResultDetailsController.getRaceResultDet
 
 // Schedule
 app.get('/:year/schedule', ScheduleController.getSchedule);
+app.get('/:year/schedule/nexts', ScheduleController.getNextRaces);
+app.get('/:year/schedule/current', ScheduleController.getCurrentRace);
 
 export default app;
