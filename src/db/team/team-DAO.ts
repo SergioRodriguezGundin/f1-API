@@ -39,7 +39,7 @@ export class TeamDAO implements TeamDAOInterface {
 		const cachedTeams = await this.env.F1_CACHE.get<TeamDB[]>(`teams`, 'json');
 
 		if (cachedTeams) {
-			const team = cachedTeams.find((team) => team.queryName === name);
+			const team = cachedTeams.find((team) => team.queryName === name.toLowerCase());
 			if (team) {
 				return team;
 			}
@@ -47,7 +47,7 @@ export class TeamDAO implements TeamDAOInterface {
 
 		const team = await this.databaseClient
 			.getClient()
-			.db.Team.filter({ year: parseInt(year), queryName: name })
+			.db.Team.filter({ year: parseInt(year), queryName: name.toLowerCase() })
 			.getFirstOrThrow();
 
 		return team as TeamDB;
