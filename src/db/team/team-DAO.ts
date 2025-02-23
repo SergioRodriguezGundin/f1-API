@@ -21,7 +21,7 @@ export class TeamDAO implements TeamDAOInterface {
 	async getTeams(year: string): Promise<TeamDB[]> {
 		const cahedTeams = await this.env.F1_CACHE.get(`teams`, 'json');
 
-		if (cahedTeams) {
+		if (cahedTeams && (cahedTeams as TeamDB[]).length > 0) {
 			return cahedTeams as TeamDB[];
 		}
 
@@ -30,7 +30,6 @@ export class TeamDAO implements TeamDAOInterface {
 			.db.Team.filter({ year: parseInt(year) })
 			.getAll();
 
-		// save teams in CACHE
 		await this.env.F1_CACHE.put('teams', JSON.stringify(teams));
 
 		return teams as TeamDB[];

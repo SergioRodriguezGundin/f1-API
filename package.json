@@ -17,8 +17,10 @@
     "wrangler": "^3.107.3"
   },
   "dependencies": {
+    "@trpc/server": "^10.45.2",
     "@xata.io/client": "^0.29.4",
     "hono": "^4.4.4",
-    "xata": "^0.2.0"
+    "xata": "^0.2.0",
+    "zod": "^3.24.2"
   }
 }
