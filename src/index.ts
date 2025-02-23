@@ -1,6 +1,4 @@
 import { Hono } from 'hono';
-import { RacesResultsController } from './endpoints/race/races-results/races-results-controller';
-import { RaceResultDetailsController } from './endpoints/race/race-result-details/race-result-controller';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { appRouter } from './trpc/routers/main';
 import { createContext } from './trpc';
@@ -22,9 +20,5 @@ app.use('/f1/*', async (c) => {
 });
 
 app.get('/', (c) => c.text('F1 API running!'));
-
-// Races Results
-app.get('/:year/races/results', RacesResultsController.getRacesResults);
-app.get('/:year/races/results/:id', RaceResultDetailsController.getRaceResultDetails);
 
 export default app;
