@@ -1,5 +1,4 @@
 import { Hono } from 'hono';
-import { DriverController } from './endpoints/driver/driver-controller';
 import { RacesResultsController } from './endpoints/race/races-results/races-results-controller';
 import { RaceResultDetailsController } from './endpoints/race/race-result-details/race-result-controller';
 import { ScheduleController } from './endpoints/scheduler/schedule.controller';
@@ -24,10 +23,6 @@ app.use('/f1/*', async (c) => {
 });
 
 app.get('/', (c) => c.text('F1 API running!'));
-
-// Driver
-app.get('/:year/drivers', DriverController.getDrivers);
-app.get('/:year/drivers/:name', DriverController.getDriverByName);
 
 // Races Results
 app.get('/:year/races/results', RacesResultsController.getRacesResults);

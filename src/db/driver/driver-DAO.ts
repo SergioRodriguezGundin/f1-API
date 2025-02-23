@@ -18,6 +18,24 @@ export class DriverDAO implements DriverDAOInterface {
 		return DriverDAO.instance;
 	}
 
+	async getDrivers(year: string): Promise<DriverDB[]> {
+		const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
+
+		if (cachedDrivers && cachedDrivers.length > 0) {
+			return cachedDrivers;
+		}
+
+		const drivers = await this.databaseClient
+			.getClient()
+			.db.Driver.filter({ year: parseInt(year) })
+			.sort('position', 'asc')
+			.getAll();
+
+		await this.env.F1_CACHE.put('drivers', JSON.stringify(drivers));
+
+		return drivers as DriverDB[];
+	}
+
 	async getDriverByName(year: string, name: string): Promise<DriverDB> {
 		const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
 
@@ -33,23 +51,5 @@ export class DriverDAO implements DriverDAOInterface {
 			.db.Driver.filter({ year: parseInt(year), queryName: name })
 			.getFirstOrThrow();
 		return driver as DriverDB;
-	}
-
-	async getDrivers(year: string): Promise<DriverDB[]> {
-		const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
-
-		if (cachedDrivers) {
-			return cachedDrivers;
-		}
-
-		const drivers = await this.databaseClient
-			.getClient()
-			.db.Driver.filter({ year: parseInt(year) })
-			.getAll();
-
-		// save drivers in CACHE
-		await this.env.F1_CACHE.put('drivers', JSON.stringify(drivers));
-
-		return drivers as DriverDB[];
 	}
 }

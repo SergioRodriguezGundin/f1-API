@@ -12,7 +12,6 @@ export const teamRouter = router({
 		)
 		.query(async ({ input, ctx }) => {
 			try {
-				console.log('ctx.env', ctx.env);
 				const teamDAO = TeamDAO.getInstance(ctx.env);
 				const teams = await teamDAO.getTeams(input.year);
 
