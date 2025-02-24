@@ -3,10 +3,10 @@ import type { FetchCreateContextFnOptions } from '@trpc/server/adapters/fetch';
 
 // Context creation
 export const createContext = async (opts: FetchCreateContextFnOptions) => {
-	const req = opts.req as Request & { env: Env };
-	return {
-		env: req.env,
-	};
+  const req = opts.req as Request & { env: Env };
+  return {
+    env: req.env,
+  };
 };
 
 type Context = inferAsyncReturnType<typeof createContext>;
