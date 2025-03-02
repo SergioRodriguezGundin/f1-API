@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@gunsrf1/api-contracts':
+        specifier: ^0.0.9
+        version: 0.0.9
       '@trpc/server':
         specifier: ^10.45.2
         version: 10.45.2
@@ -674,6 +677,9 @@ packages:
     resolution: {integrity: sha512-AiXO/bfe9bmxBjxxtYxFAXGZvMaN5s8kO+jBHAJCON8rJoB5YS/D6X7ZNc6XQkuHNmyl4CYaMI1fJ/Gn27RGGw==}
     engines: {node: '>=6'}
     hasBin: true
+
+  '@gunsrf1/api-contracts@0.0.9':
+    resolution: {integrity: sha512-jAMYqku25em9fSSp9RVSvCkiGMTPUo7eu3F5WbCitby2J7jwS31pkK66r3WdVct74atFtNZT8T7juegi7OKmIw==}
 
   '@isaacs/cliui@8.0.2':
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
@@ -5581,6 +5587,11 @@ snapshots:
       long: 5.3.0
       protobufjs: 7.4.0
       yargs: 17.7.2
+
+  '@gunsrf1/api-contracts@0.0.9':
+    dependencies:
+      '@trpc/server': 10.45.2
+      zod: 3.24.2
 
   '@isaacs/cliui@8.0.2':
     dependencies:

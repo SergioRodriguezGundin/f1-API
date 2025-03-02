@@ -1,9 +1,7 @@
-import { Schedule } from '../../xata';
-
-export interface ScheduleDB extends Schedule {}
+import { ISchedule } from '@gunsrf1/api-contracts/src/scheduler/scheduler.interface';
 
 export interface ScheduleDAOInterface {
-  getSchedule(year: string): Promise<ScheduleDB[]>;
-  getNextRaces(year: string): Promise<ScheduleDB[]>;
-  getCurrentRace(year: string): Promise<ScheduleDB>;
+  getSchedule(year: string): Promise<ISchedule[]>;
+  getNextRaces(year: string): Promise<ISchedule[]>;
+  getCurrentRace(year: string): Promise<ISchedule>;
 }

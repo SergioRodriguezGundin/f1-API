@@ -1,8 +1,6 @@
-import { Team } from '../../xata';
-
-export interface TeamDB extends Team {}
+import { ITeams } from '@gunsrf1/api-contracts/src/teams/teams.interface';
 
 export interface TeamDAOInterface {
-  getTeams(year: string): Promise<TeamDB[]>;
-  getTeamByName(year: string, name: string): Promise<TeamDB>;
+  getTeams(year: string): Promise<ITeams[]>;
+  getTeamByName(year: string, name: string): Promise<ITeams>;
 }

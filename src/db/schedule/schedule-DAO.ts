@@ -1,12 +1,6 @@
+import { ISchedule } from '@gunsrf1/api-contracts/src/scheduler/scheduler.interface';
 import { DBXataClient } from '../xata-client';
-import { ScheduleDAOInterface, ScheduleDB } from './schedule-DAO.interface';
-
-interface ScheduleDate {
-  startMonth: number;
-  endMonth: number;
-  startDay: number;
-  endDay: number;
-}
+import { ScheduleDAOInterface } from './schedule-DAO.interface';
 
 export class ScheduleDAO implements ScheduleDAOInterface {
   private static instance: ScheduleDAO;
@@ -25,52 +19,52 @@ export class ScheduleDAO implements ScheduleDAOInterface {
     return ScheduleDAO.instance;
   }
 
-  public async getSchedule(year: string): Promise<ScheduleDB[]> {
+  public async getSchedule(year: string): Promise<ISchedule[]> {
     const cachedSchedule = await this.env.F1_CACHE.get(`schedule-${year}`, 'json');
 
     if (cachedSchedule) {
-      return cachedSchedule as ScheduleDB[];
+      return cachedSchedule as ISchedule[];
     }
 
-    const schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+    const schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
     const scheduleOrdered = this.orderRacesByDate(schedule);
 
     await this.env.F1_CACHE.put(`schedule-${year}`, JSON.stringify(scheduleOrdered));
 
-    return scheduleOrdered as ScheduleDB[];
+    return scheduleOrdered;
   }
 
-  public async getNextRaces(year: string): Promise<ScheduleDB[]> {
+  public async getNextRaces(year: string): Promise<ISchedule[]> {
     const currentDate = new Date();
-    let schedule: ScheduleDB[] = [];
-    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ScheduleDB[];
+    let schedule: ISchedule[] = [];
+    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
 
     if (!schedule) {
-      schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+      schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
     }
 
-    const nextRaces = this.orderRacesByDate(schedule).filter((race) => (race.date as Date) >= currentDate);
+    const nextRaces = this.orderRacesByDate(schedule).filter((race) => new Date(race.date) >= currentDate);
     await this.env.F1_CACHE.put(`next-races-${year}`, JSON.stringify(nextRaces));
 
     return nextRaces.slice(1, nextRaces.length - 1);
   }
 
-  public async getCurrentRace(year: string): Promise<ScheduleDB> {
+  public async getCurrentRace(year: string): Promise<ISchedule> {
     const currentDate = new Date();
-    let schedule: ScheduleDB[] = [];
-    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ScheduleDB[];
+    let schedule: ISchedule[] = [];
+    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
 
     if (!schedule) {
-      schedule = await this.databaseClient.getClient().db.Schedule.getAll();
+      schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
     }
 
-    const nextRace = this.orderRacesByDate(schedule).find((race) => (race.date as Date) >= currentDate);
+    const nextRace = this.orderRacesByDate(schedule).find((race) => new Date(race.date) >= currentDate);
     await this.env.F1_CACHE.put(`current-race-${year}`, JSON.stringify(nextRace));
 
-    return nextRace as ScheduleDB;
+    return nextRace as ISchedule;
   }
 
-  private orderRacesByDate(races: ScheduleDB[]): ScheduleDB[] {
-    return races.sort((a, b) => (a.date as Date).getTime() - (b.date as Date).getTime());
+  private orderRacesByDate(races: ISchedule[]): ISchedule[] {
+    return races.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 }

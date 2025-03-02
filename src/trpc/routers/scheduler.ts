@@ -1,40 +1,25 @@
-import { router } from '..';
-import { z } from 'zod';
 import { ScheduleDAO } from '../../db/schedule/schedule-DAO';
-import { publicProcedure } from '..';
 import { TRPCError } from '@trpc/server';
 
-export const schedulerRouter = router({
-  getSchedule: publicProcedure
-    .input(z.object({ year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number') }))
-    .query(async ({ input, ctx }) => {
-      try {
-        const scheduleDAO = ScheduleDAO.getInstance(ctx.env);
-        const schedule = await scheduleDAO.getSchedule(input.year);
+export const schedulerRouterImpl = (env: Env) => {
+  return {
+    getSchedule: async (year: string) => {
+      const scheduleDAO = ScheduleDAO.getInstance(env);
+      const schedule = await scheduleDAO.getSchedule(year);
 
-        if (!schedule || schedule.length === 0) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: `No schedule found for year ${input.year}`,
-          });
-        }
-
-        return schedule;
-      } catch (error) {
-        if (error instanceof TRPCError) throw error;
-
+      if (!schedule || schedule.length === 0) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to get schedule',
+          code: 'NOT_FOUND',
+          message: `No schedule found for year ${year}`,
         });
       }
-    }),
-  getNextRaces: publicProcedure
-    .input(z.object({ year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number') }))
-    .query(async ({ input, ctx }) => {
+
+      return schedule;
+    },
+    getNextRaces: async (year: string) => {
       try {
-        const scheduleDAO = ScheduleDAO.getInstance(ctx.env);
-        const schedule = await scheduleDAO.getNextRaces(input.year);
+        const scheduleDAO = ScheduleDAO.getInstance(env);
+        const schedule = await scheduleDAO.getNextRaces(year);
 
         return schedule;
       } catch (error) {
@@ -43,15 +28,14 @@ export const schedulerRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to get next races',
+          cause: error,
         });
       }
-    }),
-  getCurrentRace: publicProcedure
-    .input(z.object({ year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number') }))
-    .query(async ({ input, ctx }) => {
+    },
+    getCurrentRace: async (year: string) => {
       try {
-        const scheduleDAO = ScheduleDAO.getInstance(ctx.env);
-        const schedule = await scheduleDAO.getCurrentRace(input.year);
+        const scheduleDAO = ScheduleDAO.getInstance(env);
+        const schedule = await scheduleDAO.getCurrentRace(year);
 
         return schedule;
       } catch (error) {
@@ -60,7 +44,9 @@ export const schedulerRouter = router({
         throw new TRPCError({
           code: 'INTERNAL_SERVER_ERROR',
           message: 'Failed to get current race',
+          cause: error,
         });
       }
-    }),
-});
+    },
+  };
+};

@@ -1,22 +1,32 @@
-import { Context, Hono } from 'hono';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
-import { appRouter } from './trpc/routers/main';
-import { createContext } from './trpc';
+import { Context, Hono } from 'hono';
+
+import { f1Router } from '@gunsrf1/api-contracts';
+import { driverRouterImpl } from './trpc/routers/driver';
+import { schedulerRouterImpl } from './trpc/routers/scheduler';
+import { teamRouterImpl } from './trpc/routers/team';
+import { raceResultDetailsRouterImpl } from './trpc/routers/race/race-result-details/race-result-details';
+import { racesResultsRouterImpl } from './trpc/routers/race/races-results/races-results';
 
 export const app = new Hono();
 
-const createContextWithEnv = async (opts: any, env: any) => {
-  return createContext({
-    ...opts,
-    req: Object.assign(opts.req, { env }),
-  });
+const createContextWithEnv = async (opts: any, env: Env) => {
+  return {
+    api: {
+      teams: teamRouterImpl(env),
+      drivers: driverRouterImpl(env),
+      scheduler: schedulerRouterImpl(env),
+      racesResults: racesResultsRouterImpl(env),
+      raceResultDetails: raceResultDetailsRouterImpl(env),
+    },
+  };
 };
 
 const requestHandler = async (c: Context) => {
   return await fetchRequestHandler({
     endpoint: '/f1',
     req: c.req.raw,
-    router: appRouter,
+    router: f1Router,
     createContext: async (opts) => createContextWithEnv(opts, c.env),
   });
 };

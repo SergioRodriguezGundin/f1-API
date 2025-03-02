@@ -1,5 +1,6 @@
+import { IDriver } from '@gunsrf1/api-contracts/src/drivers/drivers.interface';
 import { DBXataClient } from '../xata-client';
-import { DriverDAOInterface, DriverDB } from './driver-DAO.interface';
+import { DriverDAOInterface } from './driver-DAO.interface';
 
 export class DriverDAO implements DriverDAOInterface {
   private static instance: DriverDAO;
@@ -18,8 +19,8 @@ export class DriverDAO implements DriverDAOInterface {
     return DriverDAO.instance;
   }
 
-  async getDrivers(year: string): Promise<DriverDB[]> {
-    const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
+  async getDrivers(year: string): Promise<IDriver[]> {
+    const cachedDrivers = await this.env.F1_CACHE.get<IDriver[]>(`drivers`, 'json');
 
     if (cachedDrivers && cachedDrivers.length > 0) {
       return cachedDrivers;
@@ -33,11 +34,11 @@ export class DriverDAO implements DriverDAOInterface {
 
     await this.env.F1_CACHE.put('drivers', JSON.stringify(drivers));
 
-    return drivers as DriverDB[];
+    return drivers as unknown as IDriver[];
   }
 
-  async getDriverByName(year: string, name: string): Promise<DriverDB> {
-    const cachedDrivers = await this.env.F1_CACHE.get<DriverDB[]>(`drivers`, 'json');
+  async getDriverByName(year: string, name: string): Promise<IDriver> {
+    const cachedDrivers = await this.env.F1_CACHE.get<IDriver[]>(`drivers`, 'json');
 
     if (cachedDrivers) {
       const driver = cachedDrivers.find((driver) => driver.queryName === name);
@@ -50,6 +51,6 @@ export class DriverDAO implements DriverDAOInterface {
       .getClient()
       .db.Driver.filter({ year: parseInt(year), queryName: name })
       .getFirstOrThrow();
-    return driver as DriverDB;
+    return driver as unknown as IDriver;
   }
 }

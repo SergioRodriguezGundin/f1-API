@@ -1,24 +1,17 @@
-import { z } from 'zod';
-import { router, publicProcedure } from '../index';
 import { TeamDAO } from '../../db/team/team-DAO';
 import { TRPCError } from '@trpc/server';
 
-export const teamRouter = router({
-  getTeams: publicProcedure
-    .input(
-      z.object({
-        year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number'),
-      })
-    )
-    .query(async ({ input, ctx }) => {
+export const teamRouterImpl = (env: Env) => {
+  return {
+    getTeams: async (year: string) => {
       try {
-        const teamDAO = TeamDAO.getInstance(ctx.env);
-        const teams = await teamDAO.getTeams(input.year);
+        const teamDAO = TeamDAO.getInstance(env);
+        const teams = await teamDAO.getTeams(year);
 
         if (!teams || teams.length === 0) {
           throw new TRPCError({
             code: 'NOT_FOUND',
-            message: `No teams found for year ${input.year}`,
+            message: `No teams found for year ${year}`,
           });
         }
 
@@ -32,24 +25,16 @@ export const teamRouter = router({
           cause: error,
         });
       }
-    }),
-
-  getTeamByName: publicProcedure
-    .input(
-      z.object({
-        year: z.string().regex(/^\d{4}$/, 'Year must be a 4-digit number'),
-        name: z.string().min(1, 'Team name is required'),
-      })
-    )
-    .query(async ({ input, ctx }) => {
+    },
+    getTeamByName: async (year: string, name: string) => {
       try {
-        const teamDAO = TeamDAO.getInstance(ctx.env);
-        const team = await teamDAO.getTeamByName(input.year, input.name);
+        const teamDAO = TeamDAO.getInstance(env);
+        const team = await teamDAO.getTeamByName(year, name);
 
         if (!team) {
           throw new TRPCError({
             code: 'NOT_FOUND',
-            message: `Team "${input.name}" not found for year ${input.year}`,
+            message: `Team "${name}" not found for year ${year}`,
           });
         }
 
@@ -63,5 +48,6 @@ export const teamRouter = router({
           cause: error,
         });
       }
-    }),
-});
+    },
+  };
+};

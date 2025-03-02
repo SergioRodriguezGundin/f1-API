@@ -1,6 +1,6 @@
 import { DBXataClient } from '../../xata-client';
-import { RacesResulstDAOInterface, RacesResultsDB } from './races-results-DAO.interface';
-
+import { RacesResulstDAOInterface } from './races-results-DAO.interface';
+import { IRacesResults } from '@gunsrf1/api-contracts/src/races/races-results/races-results.interface';
 export class RacesResultsDAO implements RacesResulstDAOInterface {
   private static instance: RacesResultsDAO;
   private readonly databaseClient: DBXataClient;
@@ -18,7 +18,7 @@ export class RacesResultsDAO implements RacesResulstDAOInterface {
     return RacesResultsDAO.instance;
   }
 
-  async getRacesResults(year: string): Promise<RacesResultsDB[]> {
+  async getRacesResults(year: string): Promise<IRacesResults[]> {
     const cachedRacesResults = await this.env.F1_CACHE.get('races-results');
 
     if (cachedRacesResults) {
@@ -32,10 +32,10 @@ export class RacesResultsDAO implements RacesResulstDAOInterface {
 
     await this.env.F1_CACHE.put('races-results', JSON.stringify(racesResults));
 
-    return racesResults as RacesResultsDB[];
+    return racesResults as unknown as IRacesResults[];
   }
 
-  getRacesResultById(id: number): Promise<RacesResultsDB> {
+  getRacesResultById(id: number): Promise<IRacesResults> {
     throw new Error('Method not implemented.');
   }
 }

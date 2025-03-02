@@ -1,5 +1,6 @@
-import { TeamDAOInterface, TeamDB } from './team-DAO.interface';
+import { TeamDAOInterface } from './team-DAO.interface';
 import { DBXataClient } from '../xata-client';
+import { ITeam } from '@gunsrf1/api-contracts/src/teams/team.interface';
 
 export class TeamDAO implements TeamDAOInterface {
   private static instance: TeamDAO;
@@ -18,11 +19,11 @@ export class TeamDAO implements TeamDAOInterface {
     return TeamDAO.instance;
   }
 
-  async getTeams(year: string): Promise<TeamDB[]> {
+  async getTeams(year: string): Promise<ITeam[]> {
     const cahedTeams = await this.env.F1_CACHE.get(`teams`, 'json');
 
-    if (cahedTeams && (cahedTeams as TeamDB[]).length > 0) {
-      return cahedTeams as TeamDB[];
+    if (cahedTeams && (cahedTeams as ITeam[]).length > 0) {
+      return cahedTeams as ITeam[];
     }
 
     const teams = await this.databaseClient
@@ -32,11 +33,11 @@ export class TeamDAO implements TeamDAOInterface {
 
     await this.env.F1_CACHE.put('teams', JSON.stringify(teams));
 
-    return teams as TeamDB[];
+    return teams as ITeam[];
   }
 
-  async getTeamByName(year: string, name: string): Promise<TeamDB> {
-    const cachedTeams = await this.env.F1_CACHE.get<TeamDB[]>(`teams`, 'json');
+  async getTeamByName(year: string, name: string): Promise<ITeam> {
+    const cachedTeams = await this.env.F1_CACHE.get<ITeam[]>(`teams`, 'json');
 
     if (cachedTeams) {
       const team = cachedTeams.find((team) => team.queryName === name.toLowerCase());
@@ -50,6 +51,6 @@ export class TeamDAO implements TeamDAOInterface {
       .db.Team.filter({ year: parseInt(year), queryName: name.toLowerCase() })
       .getFirstOrThrow();
 
-    return team as TeamDB;
+    return team as ITeam;
   }
 }

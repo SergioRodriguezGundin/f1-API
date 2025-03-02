@@ -1,5 +1,5 @@
+import { IRaceResultDetails } from '@gunsrf1/api-contracts/src/races/race-result-details/race-result-details.interface';
 import { DBXataClient } from '../../xata-client';
-import { RaceResultDetailsDB } from './race-result-details-DAO.interface';
 
 export class RaceResultDetailsDAO implements RaceResultDetailsDAO {
   private static instance: RaceResultDetailsDAO;
@@ -18,10 +18,10 @@ export class RaceResultDetailsDAO implements RaceResultDetailsDAO {
     return RaceResultDetailsDAO.instance;
   }
 
-  async getRaceResultDetails(year: string, racePlace: string): Promise<RaceResultDetailsDB[]> {
+  async getRaceResultDetails(year: string, racePlace: string): Promise<IRaceResultDetails[]> {
     const raceResultDetails = await this.databaseClient.getClient().db.Race_result.getAll({
       filter: { year: parseInt(year), place: racePlace },
     });
-    return raceResultDetails as RaceResultDetailsDB[];
+    return raceResultDetails as unknown as IRaceResultDetails[];
   }
 }
