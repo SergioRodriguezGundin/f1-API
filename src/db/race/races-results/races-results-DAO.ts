@@ -27,7 +27,8 @@ export class RacesResultsDAO implements RacesResulstDAOInterface {
 
     const racesResults = await this.databaseClient
       .getClient()
-      .db.Races_result.filter({ year: parseInt(year) })
+      .db.Races_result.select(['*', 'team.id', 'team.id', 'team.name', 'team.icon', 'winner.id', 'winner.name', 'winner.image'])
+      .filter({ year: parseInt(year) })
       .getAll();
 
     await this.env.F1_CACHE.put('races-results', JSON.stringify(racesResults));

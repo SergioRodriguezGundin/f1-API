@@ -28,7 +28,8 @@ export class DriverDAO implements DriverDAOInterface {
 
     const drivers = await this.databaseClient
       .getClient()
-      .db.Driver.filter({ year: parseInt(year) })
+      .db.Driver.select(['*', 'team.id', 'team.name', 'team.car', 'team.icon'])
+      .filter({ year: parseInt(year) })
       .sort('position', 'asc')
       .getAll();
 
