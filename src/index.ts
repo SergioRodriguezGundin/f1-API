@@ -11,6 +11,23 @@ import { teamRouterImpl } from './trpc/routers/team';
 
 export const app = new Hono();
 
+app.use(
+  '*',
+  cors({
+    origin: ['http://localhost:4200'],
+    allowHeaders: [
+      'Content-Type',
+      'Authorization',
+      'trpc-batch', // Important for tRPC
+      'x-trpc-source', // Important for tRPC
+    ],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
+    exposeHeaders: ['Content-Length', 'Content-Type', 'Cache-Control'],
+    credentials: true,
+    maxAge: 3600,
+  })
+);
+
 const createContextWithEnv = async (opts: any, env: Env) => {
   return {
     api: {
@@ -32,26 +49,17 @@ const requestHandler = async (c: Context) => {
   });
 };
 
-app.use(
-  '*',
-  cors({
-    origin: '*',
-    allowHeaders: ['Content-Type', 'Authorization'],
-    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    exposeHeaders: ['Content-Length', 'Content-Type'],
-    credentials: true,
-  })
-);
-
 app.all('/f1/*', async (c) => {
   const request = c.req.raw;
 
   if (request.method === 'GET') {
     const cache = caches.default;
-
     const cachedResponse = await cache.match(request);
+
     if (cachedResponse) {
-      return cachedResponse;
+      const response = new Response(cachedResponse.body, cachedResponse);
+      response.headers.set('Cache-Control', 's-maxage=3600');
+      return response;
     }
 
     const response = await requestHandler(c);
