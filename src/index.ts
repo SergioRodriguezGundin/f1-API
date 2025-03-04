@@ -2,11 +2,12 @@ import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 import { Context, Hono } from 'hono';
 
 import { f1Router } from '@gunsrf1/api-contracts';
+import { cors } from 'hono/cors';
 import { driverRouterImpl } from './trpc/routers/driver';
-import { schedulerRouterImpl } from './trpc/routers/scheduler';
-import { teamRouterImpl } from './trpc/routers/team';
 import { raceResultDetailsRouterImpl } from './trpc/routers/race/race-result-details/race-result-details';
 import { racesResultsRouterImpl } from './trpc/routers/race/races-results/races-results';
+import { schedulerRouterImpl } from './trpc/routers/scheduler';
+import { teamRouterImpl } from './trpc/routers/team';
 
 export const app = new Hono();
 
@@ -30,6 +31,17 @@ const requestHandler = async (c: Context) => {
     createContext: async (opts) => createContextWithEnv(opts, c.env),
   });
 };
+
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowHeaders: ['Content-Type', 'Authorization'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    exposeHeaders: ['Content-Length', 'Content-Type'],
+    credentials: true,
+  })
+);
 
 app.all('/f1/*', async (c) => {
   const request = c.req.raw;
