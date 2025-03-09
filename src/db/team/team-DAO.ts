@@ -20,7 +20,7 @@ export class TeamDAO implements TeamDAOInterface {
   }
 
   async getTeams(year: string): Promise<ITeam[]> {
-    const cahedTeams = await this.env.F1_CACHE.get(`teams`, 'json');
+    const cahedTeams = await this.env.F1_CACHE.get(`teams-${year}`, 'json');
 
     if (cahedTeams && (cahedTeams as ITeam[]).length > 0) {
       return cahedTeams as ITeam[];
@@ -31,13 +31,13 @@ export class TeamDAO implements TeamDAOInterface {
       .db.Team.filter({ year: parseInt(year) })
       .getAll();
 
-    await this.env.F1_CACHE.put('teams', JSON.stringify(teams));
+    await this.env.F1_CACHE.put(`teams-${year}`, JSON.stringify(teams));
 
     return teams as ITeam[];
   }
 
   async getTeamByName(year: string, name: string): Promise<ITeam> {
-    const cachedTeams = await this.env.F1_CACHE.get<ITeam[]>(`teams`, 'json');
+    const cachedTeams = await this.env.F1_CACHE.get<ITeam[]>(`teams-${year}`, 'json');
 
     if (cachedTeams) {
       const team = cachedTeams.find((team) => team.queryName === name.toLowerCase());

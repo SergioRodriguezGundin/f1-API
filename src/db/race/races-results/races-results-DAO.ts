@@ -19,7 +19,7 @@ export class RacesResultsDAO implements RacesResulstDAOInterface {
   }
 
   async getRacesResults(year: string): Promise<IRacesResults[]> {
-    const cachedRacesResults = await this.env.F1_CACHE.get('races-results');
+    const cachedRacesResults = await this.env.F1_CACHE.get(`races-results-${year}`);
 
     if (cachedRacesResults) {
       return JSON.parse(cachedRacesResults);
@@ -31,7 +31,7 @@ export class RacesResultsDAO implements RacesResulstDAOInterface {
       .filter({ year: parseInt(year) })
       .getAll();
 
-    await this.env.F1_CACHE.put('races-results', JSON.stringify(racesResults));
+    await this.env.F1_CACHE.put(`races-results-${year}`, JSON.stringify(racesResults));
 
     return racesResults as unknown as IRacesResults[];
   }
