@@ -20,7 +20,7 @@ export class RaceResultDetailsDAO implements RaceResultDetailsDAO {
     const raceResultDetails = await this.databaseClient
       .getClient()
       .db.Race_result.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
-      .getAll({
+      .getFirst({
         filter: { year: parseInt(year), place: racePlace },
       });
     return raceResultDetails as unknown as IRaceResultDetails[];
