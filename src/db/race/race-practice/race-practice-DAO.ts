@@ -21,7 +21,7 @@ export class RacePracticeDAO implements RacePracticeDAOInterface {
     const racePractice = await this.databaseClient
       .getClient()
       .db.Race_practice.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
-      .getFirst({
+      .getAll({
         filter: { year, place: racePlace },
       });
     return racePractice as unknown as IRacePractice[];

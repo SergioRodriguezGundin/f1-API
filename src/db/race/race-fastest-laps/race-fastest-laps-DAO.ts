@@ -21,7 +21,7 @@ export class RaceFastestLapsDAO implements RaceFastestLapsDAOInterface {
     const raceFastestLaps = await this.databaseClient
       .getClient()
       .db.Race_fastest_laps.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
-      .getFirst({ filter: { year, place: racePlace } });
+      .getAll({ filter: { year, place: racePlace } });
     return raceFastestLaps as unknown as IRaceFastestLaps[];
   }
 }
