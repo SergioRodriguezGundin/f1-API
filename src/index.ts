@@ -5,9 +5,10 @@ import { f1Router } from '@gunsrf1/api-contracts';
 import { cors } from 'hono/cors';
 import { driverRouterImpl } from './trpc/routers/driver';
 import { raceResultDetailsRouterImpl } from './trpc/routers/race/race-result-details/race-result-details';
-import { racesResultsRouterImpl } from './trpc/routers/race/races-results/races-results';
+import { racesResultsRouterImpl } from './trpc/routers/races/races-results/races-results';
 import { schedulerRouterImpl } from './trpc/routers/scheduler';
 import { teamRouterImpl } from './trpc/routers/team';
+import { raceQualifyingRouterImpl } from './trpc/routers/race/race-qualifying/race-qualifying';
 
 export const app = new Hono();
 
@@ -36,6 +37,9 @@ const createContextWithEnv = async (opts: any, env: Env) => {
       scheduler: schedulerRouterImpl(env),
       racesResults: racesResultsRouterImpl(env),
       raceResultDetails: raceResultDetailsRouterImpl(env),
+      race: {
+        qualifying: raceQualifyingRouterImpl(env),
+      },
     },
   };
 };

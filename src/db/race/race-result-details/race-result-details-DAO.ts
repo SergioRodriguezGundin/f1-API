@@ -1,14 +1,12 @@
-import { IRaceResultDetails } from '@gunsrf1/api-contracts/src/races/race-result-details/race-result-details.interface';
+import { IRaceResultDetails } from '@gunsrf1/api-contracts/src/race/race-result-details/race-result-details.interface';
 import { DBXataClient } from '../../xata-client';
 
 export class RaceResultDetailsDAO implements RaceResultDetailsDAO {
   private static instance: RaceResultDetailsDAO;
   private readonly databaseClient: DBXataClient;
-  private readonly env: Env;
 
   constructor(env: Env) {
     this.databaseClient = DBXataClient.getInstance(env);
-    this.env = env;
   }
 
   static getInstance(env: Env): RaceResultDetailsDAO {
