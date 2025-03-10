@@ -11,6 +11,7 @@ import { teamRouterImpl } from './trpc/routers/team';
 import { raceQualifyingRouterImpl } from './trpc/routers/race/race-qualifying/race-qualifying';
 import { racePracticeRouterImpl } from './trpc/routers/race/race-practice/race-practice';
 import { raceStartingGridRouterImpl } from './trpc/routers/race/race-starting-grid/race-starting-grid';
+import { racePitStopsRouterImpl } from './trpc/routers/race/race-pitstops/race-pitstops';
 
 export const app = new Hono();
 
@@ -43,6 +44,7 @@ const createContextWithEnv = async (opts: any, env: Env) => {
         qualifying: raceQualifyingRouterImpl(env),
         practice: racePracticeRouterImpl(env),
         startingGrid: raceStartingGridRouterImpl(env),
+        pitStops: racePitStopsRouterImpl(env),
       },
     },
   };
