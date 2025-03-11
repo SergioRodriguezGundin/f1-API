@@ -26,4 +26,14 @@ export class RacePracticeDAO implements RacePracticeDAOInterface {
       });
     return racePractice as unknown as IRacePractice[];
   }
+
+  async getRacePracticeBySession(year: string, racePlace: string, session: string): Promise<IRacePractice[]> {
+    const racePractice = await this.databaseClient
+      .getClient()
+      .db.Race_practice.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .getAll({
+        filter: { year: parseInt(year), place: racePlace, session: parseInt(session) },
+      });
+    return racePractice as unknown as IRacePractice[];
+  }
 }
