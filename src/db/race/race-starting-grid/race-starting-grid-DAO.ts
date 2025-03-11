@@ -18,9 +18,12 @@ export class RaceStartingGridDAO implements RaceStartingGridDAOInterface {
   }
 
   async getRaceStartingGrid(year: string, racePlace: string): Promise<IRaceStartingGrid[]> {
-    const raceStartingGrid = await this.databaseClient.getClient().db.Race_starting_grid.getAll({
-      filter: { year, place: racePlace },
-    });
+    const raceStartingGrid = await this.databaseClient
+      .getClient()
+      .db.Race_starting_grid.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .getAll({
+        filter: { year: parseInt(year), place: racePlace },
+      });
     return raceStartingGrid as unknown as IRaceStartingGrid[];
   }
 }

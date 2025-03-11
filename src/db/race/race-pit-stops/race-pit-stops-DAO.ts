@@ -21,7 +21,7 @@ export class RacePitStopsDAO implements RacePitStopsDAOInterface {
     const racePitStops = await this.databaseClient
       .getClient()
       .db.Race_pit_stops.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
-      .getAll({ filter: { year, place: racePlace } });
+      .getAll({ filter: { year: parseInt(year), place: racePlace } });
     return racePitStops as unknown as IRacePitStops[];
   }
 }

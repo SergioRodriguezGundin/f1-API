@@ -8,11 +8,7 @@ import { raceResultDetailsRouterImpl } from './trpc/routers/race/race-result-det
 import { racesResultsRouterImpl } from './trpc/routers/races/races-results/races-results';
 import { schedulerRouterImpl } from './trpc/routers/scheduler';
 import { teamRouterImpl } from './trpc/routers/team';
-import { raceQualifyingRouterImpl } from './trpc/routers/race/race-qualifying/race-qualifying';
-import { racePracticeRouterImpl } from './trpc/routers/race/race-practice/race-practice';
-import { raceStartingGridRouterImpl } from './trpc/routers/race/race-starting-grid/race-starting-grid';
-import { racePitStopsRouterImpl } from './trpc/routers/race/race-pitstops/race-pitstops';
-import { raceFastestLapsRouterImpl } from './trpc/routers/race/race-fastest-laps/race-fastest-laps';
+import { raceRouterImpl } from './trpc/routers/race/race';
 
 export const app = new Hono();
 
@@ -41,13 +37,7 @@ const createContextWithEnv = async (opts: any, env: Env) => {
       scheduler: schedulerRouterImpl(env),
       racesResults: racesResultsRouterImpl(env),
       raceResultDetails: raceResultDetailsRouterImpl(env),
-      race: {
-        qualifying: raceQualifyingRouterImpl(env),
-        practice: racePracticeRouterImpl(env),
-        startingGrid: raceStartingGridRouterImpl(env),
-        pitStops: racePitStopsRouterImpl(env),
-        fastestLaps: raceFastestLapsRouterImpl(env),
-      },
+      race: raceRouterImpl(env),
     },
   };
 };

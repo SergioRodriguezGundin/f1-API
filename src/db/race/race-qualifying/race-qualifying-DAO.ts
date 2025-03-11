@@ -17,12 +17,12 @@ export class RaceQualifyingDAO implements RaceQualifyingDAOInterface {
     return RaceQualifyingDAO.instance;
   }
 
-  async getRaceQualifying(place: string, year: string): Promise<IRaceQualifying[]> {
+  async getRaceQualifying(year: string, place: string): Promise<IRaceQualifying[]> {
     const raceQualifying = await this.databaseClient
       .getClient()
       .db.Race_qualifying.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
       .getAll({
-        filter: { place, year },
+        filter: { year: parseInt(year), place },
       });
     return raceQualifying as unknown as IRaceQualifying[];
   }

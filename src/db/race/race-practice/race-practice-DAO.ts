@@ -22,7 +22,7 @@ export class RacePracticeDAO implements RacePracticeDAOInterface {
       .getClient()
       .db.Race_practice.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
       .getAll({
-        filter: { year, place: racePlace },
+        filter: { year: parseInt(year), place: racePlace },
       });
     return racePractice as unknown as IRacePractice[];
   }
