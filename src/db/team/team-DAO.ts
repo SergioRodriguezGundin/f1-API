@@ -1,13 +1,13 @@
 import { TeamDAOInterface } from './team-DAO.interface';
 import { DBXataClient } from '../xata-client';
-import { ITeam } from '@gunsrf1/api-contracts/src/teams/team.interface';
+import { ITeam } from '@gunsrf1/api-contracts/src/teams/teams.interface';
 
 export class TeamDAO implements TeamDAOInterface {
   private static instance: TeamDAO;
   private readonly databaseClient: DBXataClient;
   private readonly env: Env;
 
-  private constructor(env: Env) {
+  constructor(env: Env) {
     this.databaseClient = DBXataClient.getInstance(env);
     this.env = env;
   }

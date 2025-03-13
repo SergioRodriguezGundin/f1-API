@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@gunsrf1/api-contracts':
-        specifier: ^0.0.23
-        version: 0.0.23
+        specifier: ^0.0.24
+        version: 0.0.24
       '@trpc/server':
         specifier: ^10.45.2
         version: 10.45.2
@@ -690,8 +690,8 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
 
-  '@gunsrf1/api-contracts@0.0.23':
-    resolution: {integrity: sha512-bOcZRE7PlHnpkGkZUVMNwlgyoO82kQagTr3shyFeM7Dv39tjEpsg/rp7teHXgxvnMicqz+uLjzE57gBzVCFRCQ==}
+  '@gunsrf1/api-contracts@0.0.24':
+    resolution: {integrity: sha512-zVSt/F4G5WM986EmXfCqEiOw1cTq75o60JsoYCyhEpxuBTwjD1uWzNuxcTM1ravc7tSKNH5RiJIYrtiBwpb0uA==}
 
   '@img/sharp-darwin-arm64@0.33.5':
     resolution: {integrity: sha512-UT4p+iz/2H4twwAoLCqfA9UH5pI6DggwKEGuaPy7nCVQ8ZsiY5PIcrRvD1DzuY3qYL07NtIQcWnBSY/heikIFQ==}
@@ -5751,7 +5751,7 @@ snapshots:
       protobufjs: 7.4.0
       yargs: 17.7.2
 
-  '@gunsrf1/api-contracts@0.0.23':
+  '@gunsrf1/api-contracts@0.0.24':
     dependencies:
       '@trpc/server': 10.45.2
       zod: 3.24.2
