@@ -28,8 +28,9 @@ export class SprintRaceDAO implements SprintRaceDAOInterface {
 
     const sprintRace = await this.databaseClient
       .getClient()
-      .db.Sprint_race.filter({ year: parseInt(year), place: racePlace })
-      .getFirst();
+      .db.Sprint_race.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .filter({ year: parseInt(year), place: racePlace })
+      .getAll();
 
     await this.env.F1_CACHE.put(`sprint-race-${year}-${racePlace}`, JSON.stringify(sprintRace));
 
