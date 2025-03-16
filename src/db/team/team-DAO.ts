@@ -29,6 +29,7 @@ export class TeamDAO implements TeamDAOInterface {
     const teams = await this.databaseClient
       .getClient()
       .db.Team.filter({ year: parseInt(year) })
+      .sort('points', 'asc')
       .getAll();
 
     await this.env.F1_CACHE.put(`teams-${year}`, JSON.stringify(teams));

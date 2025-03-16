@@ -21,6 +21,7 @@ export class RaceQualifyingDAO implements RaceQualifyingDAOInterface {
     const raceQualifying = await this.databaseClient
       .getClient()
       .db.Race_qualifying.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .sort('position', 'asc')
       .getAll({
         filter: { year: parseInt(year), place },
       });

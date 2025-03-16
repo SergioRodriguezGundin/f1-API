@@ -30,6 +30,7 @@ export class SprintGridDAO implements SprintGridDAOInterface {
       .getClient()
       .db.Sprint_grid.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
       .filter({ year: parseInt(year), place: racePlace })
+      .sort('position', 'asc')
       .getAll();
 
     await this.env.F1_CACHE.put(`sprint-grid-${year}-${racePlace}`, JSON.stringify(sprintGrid));

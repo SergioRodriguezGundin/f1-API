@@ -30,6 +30,7 @@ export class SprintQualifyingDAO implements SprintQualifyingDAOInterface {
       .getClient()
       .db.Sprint_qualifying.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
       .filter({ year: parseInt(year), place: racePlace })
+      .sort('position', 'asc')
       .getAll();
 
     await this.env.F1_CACHE.put(`sprint-qualifying-${year}-${racePlace}`, JSON.stringify(sprintQualifying));

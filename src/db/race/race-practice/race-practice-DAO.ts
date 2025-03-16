@@ -21,6 +21,7 @@ export class RacePracticeDAO implements RacePracticeDAOInterface {
     const racePractice = await this.databaseClient
       .getClient()
       .db.Race_practice.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .sort('position', 'asc')
       .getAll({
         filter: { year: parseInt(year), place: racePlace },
       });
@@ -31,6 +32,7 @@ export class RacePracticeDAO implements RacePracticeDAOInterface {
     const racePractice = await this.databaseClient
       .getClient()
       .db.Race_practice.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+      .sort('position', 'asc')
       .getAll({
         filter: { year: parseInt(year), place: racePlace, session: parseInt(session) },
       });
