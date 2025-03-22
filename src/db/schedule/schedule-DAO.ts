@@ -1,4 +1,5 @@
 import { ISchedule } from '@gunsrf1/api-contracts/src/scheduler/scheduler.interface';
+import { TRPCError } from '@trpc/server';
 import { DBXataClient } from '../xata-client';
 import { ScheduleDAOInterface } from './schedule-DAO.interface';
 
@@ -20,48 +21,69 @@ export class ScheduleDAO implements ScheduleDAOInterface {
   }
 
   public async getSchedule(year: string): Promise<ISchedule[]> {
-    const cachedSchedule = await this.env.F1_CACHE.get(`schedule-${year}`, 'json');
+    try {
+      const cachedSchedule = await this.env.F1_CACHE.get(`schedule-${year}`, 'json');
 
-    if (cachedSchedule) {
-      return cachedSchedule as ISchedule[];
+      if (cachedSchedule) {
+        return cachedSchedule as ISchedule[];
+      }
+
+      const schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
+      const scheduleOrdered = this.orderRacesByDate(schedule);
+
+      await this.env.F1_CACHE.put(`schedule-${year}`, JSON.stringify(scheduleOrdered));
+
+      return scheduleOrdered;
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Error getting schedule for year ${year}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
-
-    const schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
-    const scheduleOrdered = this.orderRacesByDate(schedule);
-
-    await this.env.F1_CACHE.put(`schedule-${year}`, JSON.stringify(scheduleOrdered));
-
-    return scheduleOrdered;
   }
 
   public async getNextRaces(year: string): Promise<ISchedule[]> {
-    const currentDate = new Date();
-    let schedule: ISchedule[] = [];
-    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
+    try {
+      const currentDate = new Date();
+      let schedule: ISchedule[] = [];
+      schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
 
-    if (!schedule) {
-      schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
+      if (!schedule) {
+        schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
+      }
+
+      const nextRaces = this.orderRacesByDate(schedule).filter((race) => new Date(race.date) >= currentDate);
+      await this.env.F1_CACHE.put(`next-races-${year}`, JSON.stringify(nextRaces));
+
+      return nextRaces.slice(1, nextRaces.length - 1);
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Error getting next races for year ${year}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
-
-    const nextRaces = this.orderRacesByDate(schedule).filter((race) => new Date(race.date) >= currentDate);
-    await this.env.F1_CACHE.put(`next-races-${year}`, JSON.stringify(nextRaces));
-
-    return nextRaces.slice(1, nextRaces.length - 1);
   }
 
   public async getCurrentRace(year: string): Promise<ISchedule> {
-    const currentDate = new Date();
-    let schedule: ISchedule[] = [];
-    schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
+    try {
+      const currentDate = new Date();
+      let schedule: ISchedule[] = [];
+      schedule = (await this.env.F1_CACHE.get(`schedule-${year}`, 'json')) as ISchedule[];
 
-    if (!schedule) {
-      schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
+      if (!schedule) {
+        schedule = (await this.databaseClient.getClient().db.Schedule.getAll()) as unknown as ISchedule[];
+      }
+
+      const nextRace = this.orderRacesByDate(schedule).find((race) => new Date(race.date) >= currentDate);
+      await this.env.F1_CACHE.put(`current-race-${year}`, JSON.stringify(nextRace));
+
+      return nextRace as ISchedule;
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Error getting current race for year ${year}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      });
     }
-
-    const nextRace = this.orderRacesByDate(schedule).find((race) => new Date(race.date) >= currentDate);
-    await this.env.F1_CACHE.put(`current-race-${year}`, JSON.stringify(nextRace));
-
-    return nextRace as ISchedule;
   }
 
   private orderRacesByDate(races: ISchedule[]): ISchedule[] {

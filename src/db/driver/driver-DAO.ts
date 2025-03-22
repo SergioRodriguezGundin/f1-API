@@ -1,4 +1,5 @@
 import { IDriver } from '@gunsrf1/api-contracts/src/drivers/drivers.interface';
+import { TRPCError } from '@trpc/server';
 import { DBXataClient } from '../xata-client';
 import { DriverDAOInterface } from './driver-DAO.interface';
 
@@ -48,10 +49,17 @@ export class DriverDAO implements DriverDAOInterface {
       }
     }
 
-    const driver = await this.databaseClient
-      .getClient()
-      .db.Driver.filter({ year: parseInt(year), queryName: name })
-      .getFirstOrThrow();
-    return driver as unknown as IDriver;
+    try {
+      const driver = await this.databaseClient
+        .getClient()
+        .db.Driver.filter({ year: parseInt(year), queryName: name })
+        .getFirstOrThrow();
+      return driver as unknown as IDriver;
+    } catch (error) {
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: `Driver not found for year ${year} and name ${name}`,
+      });
+    }
   }
 }

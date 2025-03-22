@@ -1,4 +1,5 @@
 import { ISprintGrid } from '@gunsrf1/api-contracts/dist/sprint/sprint-grid/sprint-grid.interface';
+import { TRPCError } from '@trpc/server';
 import { DBXataClient } from '../../xata-client';
 import { SprintGridDAOInterface } from './sprint-grid-DAO.interface';
 
@@ -20,21 +21,30 @@ export class SprintGridDAO implements SprintGridDAOInterface {
   }
 
   async getSprintGrid(year: string, racePlace: string): Promise<ISprintGrid[]> {
-    const cachedSprintGrid = await this.env.F1_CACHE.get(`sprint-grid-${year}-${racePlace}`, 'json');
+    try {
+      const cachedSprintGrid = await this.env.F1_CACHE.get(`sprint-grid-${year}-${racePlace}`, 'json');
 
-    if (cachedSprintGrid) {
-      return cachedSprintGrid as ISprintGrid[];
+      if (cachedSprintGrid) {
+        return cachedSprintGrid as ISprintGrid[];
+      }
+
+      const sprintGrid = await this.databaseClient
+        .getClient()
+        .db.Sprint_grid.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
+        .filter({ year: parseInt(year), place: racePlace })
+        .sort('position', 'asc')
+        .getAll();
+
+      await this.env.F1_CACHE.put(`sprint-grid-${year}-${racePlace}`, JSON.stringify(sprintGrid));
+
+      return sprintGrid as unknown as ISprintGrid[];
+    } catch (error) {
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: `Error getting sprint grid for year ${year} and race place ${racePlace}: ${
+          error instanceof Error ? error.message : 'Unknown error'
+        }`,
+      });
     }
-
-    const sprintGrid = await this.databaseClient
-      .getClient()
-      .db.Sprint_grid.select(['*', 'driver.id', 'driver.name', 'driver.image', 'team.id', 'team.name', 'team.icon'])
-      .filter({ year: parseInt(year), place: racePlace })
-      .sort('position', 'asc')
-      .getAll();
-
-    await this.env.F1_CACHE.put(`sprint-grid-${year}-${racePlace}`, JSON.stringify(sprintGrid));
-
-    return sprintGrid as unknown as ISprintGrid[];
   }
 }
